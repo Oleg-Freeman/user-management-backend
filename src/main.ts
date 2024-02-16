@@ -8,11 +8,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app
-      .setGlobalPrefix('/api/v1')
-      .useGlobalPipes(new ValidationPipe(configService.getValidationOptions()));
+    .setGlobalPrefix('/api/v1')
+    .useGlobalPipes(new ValidationPipe(configService.getValidationOptions()));
 
   await app.listen(port, async () =>
-      console.log(`Server is running on: ${await app.getUrl()}`),
+    console.log(`Server is running on: ${await app.getUrl()}`),
   );
 }
 bootstrap();

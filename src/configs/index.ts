@@ -4,7 +4,6 @@ import {
   ValidationPipeOptions,
 } from '@nestjs/common';
 import * as dotenv from 'dotenv';
-import { DataSourceOptions } from 'typeorm';
 
 dotenv.config({
   path: process.env.NODE_ENV === 'production' ? '.env' : '.env.local',
@@ -55,21 +54,8 @@ class ConfigService {
     return options;
   }
 
-  getDbConfig(): DataSourceOptions {
-    return {
-      type: 'postgres',
-      port: parseInt(this.getValue('POSTGRES_PORT')),
-      host: this.getValue('POSTGRES_HOST') || 'localhost',
-      username: this.getValue('POSTGRES_USER'),
-      password: this.getValue('POSTGRES_PASSWORD'),
-      database: this.getValue('POSTGRES_DB'),
-      entities: ['dist/modules/**/*.entity{.ts,.js}'],
-      migrations: ['dist/migrations/*.js'],
-      migrationsTableName: 'migrations_typeorm',
-      migrationsRun: false,
-      logging: this.getNodeEnv() !== 'production',
-      synchronize: false,
-    };
+  getMongoUrl(): string {
+    return this.getValue('MONGO_URL', false) || 'mongodb://localhost/database';
   }
 }
 

@@ -1,0 +1,17 @@
+services:
+  mongo:
+    container_name: user-management-mongo
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_DATABASE: database
+  backend:
+    container_name: user-management-backend
+    build:
+        context: .
+        dockerfile: Dockerfile
+    ports:
+      - "${PORT}:${PORT}"
+    env_file:
+      - .env

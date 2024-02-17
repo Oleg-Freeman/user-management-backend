@@ -55,7 +55,7 @@ class ConfigService {
   }
 
   getMongoUrl(): string {
-    return this.getValue('MONGO_URL', false) || 'mongodb://localhost/database';
+    return this.getValue('MONGO_URL', false) || 'mongodb://localhost:27017';
   }
 }
 

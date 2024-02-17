@@ -8,6 +8,15 @@
 $ npm install
 ```
 
+## Configuration
+
+See the `.env.example` file for the environment variables that need to be set.
+
+## Database
+
+Set the `MONGO_URL` environment variable to the connection string of your MongoDB database or use Docker Compose to set up database on localhost.
+
+
 ## Running the app
 
 ```bash

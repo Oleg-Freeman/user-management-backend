@@ -3,28 +3,40 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
 } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoginDto, RegisterDto, UpdateUserDto } from './dto';
+import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 
-@Controller('user')
+@ApiTags('Users')
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
+  @ApiOperation({ summary: 'Register new user' })
+  @Post('register')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'New user registered successfully',
+    type: User,
+  })
   async register(@Body() registerDto: RegisterDto) {
     return this.userService.register(registerDto);
   }
 
-  @Post()
+  @Post('login')
   async login(@Body() loginDto: LoginDto) {
     return this.userService.login(loginDto);
   }
 
-  @Get()
+  @Get('logout')
   async logout(@Body() createUserDto: RegisterDto) {
     return this.userService.register(createUserDto);
   }

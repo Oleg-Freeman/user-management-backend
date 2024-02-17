@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ApiProperty } from '@nestjs/swagger';
 import { HydratedDocument } from 'mongoose';
 import {
+  BaseSwaggerResponse,
   EMAIL_ERROR,
   EMAIL_REGEX,
   NAME_ERROR,
@@ -11,14 +13,17 @@ import {
 
 export type CatDocument = HydratedDocument<User>;
 
-@Schema({ timestamps: true })
-export class User {
+@Schema({ timestamps: true, versionKey: false })
+export class User extends BaseSwaggerResponse {
+  @ApiProperty({ example: 'John', description: 'First name' })
   @Prop({ required: true, trim: true, match: [NAME_REGEX, NAME_ERROR] })
   firstName: string;
 
+  @ApiProperty({ example: 'Doe', description: 'Last name' })
   @Prop({ required: true, trim: true, match: [NAME_REGEX, NAME_ERROR] })
   lastName: string;
 
+  @ApiProperty({ example: 'exaple@gail.com', description: 'Email' })
   @Prop({
     unique: true,
     required: true,
@@ -28,9 +33,16 @@ export class User {
   })
   email: string;
 
+  @ApiProperty({ example: 'Qwerty123.', description: 'Password' })
   @Prop({ required: true, trim: true, match: [PASSWORD_REGEX, PASSWORD_ERROR] })
   password: string;
 
+  @ApiProperty({
+    example:
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
+    description: 'Token',
+    required: false,
+  })
   @Prop({ required: false, trim: true })
   token?: string;
 }

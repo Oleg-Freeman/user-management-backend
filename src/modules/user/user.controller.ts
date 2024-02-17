@@ -8,11 +8,19 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { CurrentUser } from './decorators';
 import { LoginDto, RegisterDto, UpdateUserDto } from './dto';
 import { User } from './entities/user.entity';
+import { AuthGuard } from './guards';
 import { ExcludeUserPasswordInterceptor } from './interceptors';
 import { UserService } from './user.service';
 
@@ -35,6 +43,7 @@ export class UserController {
   }
 
   @UseInterceptors(ExcludeUserPasswordInterceptor)
+  @Post('login')
   @ApiOperation({ summary: 'User login' })
   @HttpCode(HttpStatus.OK)
   @ApiResponse({
@@ -42,14 +51,21 @@ export class UserController {
     description: 'User logged in successfully',
     type: User,
   })
-  @Post('login')
   async login(@Body() loginDto: LoginDto) {
     return this.userService.login(loginDto);
   }
 
+  @UseGuards(AuthGuard)
   @Get('logout')
-  async logout(@Body() createUserDto: RegisterDto) {
-    return this.userService.register(createUserDto);
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'User logout' })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'User logged out successfully',
+  })
+  async logout(@CurrentUser() user: User) {
+    return this.userService.logout(user);
   }
 
   @Get()
@@ -59,7 +75,7 @@ export class UserController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+    return this.userService.findOne({ _id: id });
   }
 
   @Patch(':id')

@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import {
   EMAIL_EXISTS_ERROR,
   MongooseModelNames,
@@ -72,22 +72,25 @@ export class UserService {
 
     const token = await this.jwtService.signAsync({ id: user.id });
 
-    user = await this.userModel.findByIdAndUpdate(user.id, { token });
+    user = await this.userModel.findByIdAndUpdate(
+      user.id,
+      { token },
+      { new: true },
+    );
 
     return user;
   }
 
-  async logout(createUserDto: RegisterDto) {
-    console.log(createUserDto);
-    return 'This action adds a new user';
+  async logout(user: User) {
+    await this.userModel.findByIdAndUpdate(user._id, { token: null });
   }
 
   async findAll() {
     return `This action returns all user`;
   }
 
-  async findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(query: FilterQuery<User>) {
+    return this.userModel.findOne(query);
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {

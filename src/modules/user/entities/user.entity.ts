@@ -30,6 +30,9 @@ export class User {
 
   @Prop({ required: true, trim: true, match: [PASSWORD_REGEX, PASSWORD_ERROR] })
   password: string;
+
+  @Prop({ required: false, trim: true })
+  token?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

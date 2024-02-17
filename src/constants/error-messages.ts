@@ -4,3 +4,4 @@ export const NAME_ERROR = 'Not a valid name';
 export const UNAUTHORIZED_ERROR = 'Unauthorized';
 export const WRONG_CREDENTIALS_MESSAGE = 'Wrong credentials';
 export const EMAIL_ERROR = 'Not a valid email';
+export const EMAIL_EXISTS_ERROR = 'Email already exists';

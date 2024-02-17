@@ -57,6 +57,14 @@ class ConfigService {
   getMongoUrl(): string {
     return this.getValue('MONGO_URL', false) || 'mongodb://localhost:27017';
   }
+
+  getJwtSecret(): string {
+    return this.getValue('JWT_SECRET');
+  }
+
+  getJwtExpiresIn(): string {
+    return this.getValue('JWT_EXPIRES_IN');
+  }
 }
 
 const configService = new ConfigService(process.env);

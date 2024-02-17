@@ -33,7 +33,6 @@ export class User extends BaseSwaggerResponse {
   })
   email: string;
 
-  @ApiProperty({ example: 'Qwerty123.', description: 'Password' })
   @Prop({ required: true, trim: true, match: [PASSWORD_REGEX, PASSWORD_ERROR] })
   password: string;
 

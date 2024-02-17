@@ -1,11 +1,19 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { EMAIL_EXISTS_ERROR, MongooseModelNames } from '../../constants';
+import {
+  EMAIL_EXISTS_ERROR,
+  MongooseModelNames,
+  WRONG_CREDENTIALS_MESSAGE,
+} from '../../constants';
 import { LoginDto, RegisterDto, UpdateUserDto } from './dto';
 import { User } from './entities/user.entity';
-import { genSalt, hash } from 'bcryptjs';
+import { compare, genSalt, hash } from 'bcryptjs';
 
 @Injectable()
 export class UserService {
@@ -47,9 +55,26 @@ export class UserService {
     return user;
   }
 
-  async login(loginDto: LoginDto) {
-    console.log(loginDto);
-    return 'This action adds a new user';
+  async login(data: LoginDto) {
+    const { email, password } = data;
+
+    let user = await this.userModel.findOne({ email });
+
+    if (!user) {
+      throw new BadRequestException(WRONG_CREDENTIALS_MESSAGE);
+    }
+
+    const isPasswordValid = await compare(password, user.password);
+
+    if (!isPasswordValid) {
+      throw new BadRequestException(WRONG_CREDENTIALS_MESSAGE);
+    }
+
+    const token = await this.jwtService.signAsync({ id: user.id });
+
+    user = await this.userModel.findByIdAndUpdate(user.id, { token });
+
+    return user;
   }
 
   async logout(createUserDto: RegisterDto) {

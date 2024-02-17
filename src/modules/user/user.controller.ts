@@ -8,10 +8,12 @@ import {
   Param,
   Patch,
   Post,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoginDto, RegisterDto, UpdateUserDto } from './dto';
 import { User } from './entities/user.entity';
+import { ExcludeUserPasswordInterceptor } from './interceptors';
 import { UserService } from './user.service';
 
 @ApiTags('Users')
@@ -19,8 +21,9 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @ApiOperation({ summary: 'Register new user' })
+  @UseInterceptors(ExcludeUserPasswordInterceptor)
   @Post('register')
+  @ApiOperation({ summary: 'Register new user' })
   @HttpCode(HttpStatus.CREATED)
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -31,6 +34,14 @@ export class UserController {
     return this.userService.register(registerDto);
   }
 
+  @UseInterceptors(ExcludeUserPasswordInterceptor)
+  @ApiOperation({ summary: 'User login' })
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'User logged in successfully',
+    type: User,
+  })
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
     return this.userService.login(loginDto);

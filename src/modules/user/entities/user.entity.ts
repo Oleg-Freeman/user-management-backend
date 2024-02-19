@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, OmitType } from '@nestjs/swagger';
 import { HydratedDocument } from 'mongoose';
 import {
   BaseSwaggerResponse,
@@ -47,3 +47,5 @@ export class User extends BaseSwaggerResponse {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+export class UserResponse extends OmitType(User, ['password', 'token']) {}

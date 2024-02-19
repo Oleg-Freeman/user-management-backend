@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
@@ -95,6 +96,16 @@ export class UserService {
 
   async findOne(query: FilterQuery<User>) {
     return this.userModel.findOne(query);
+  }
+
+  async findById(id: string) {
+    const user = await this.userModel.findById(id).select('-password -token');
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {

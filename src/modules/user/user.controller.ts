@@ -19,9 +19,9 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { CurrentUser } from './decorators';
-import { LoginDto, RegisterDto, UpdateUserDto } from './dto';
+import { LoginDto, RegisterDto, UpdateUserDto, UserIdDto } from './dto';
 import { PaginationDto } from './dto/pagination.dto';
-import { User } from './entities/user.entity';
+import { User, UserResponse } from './entities/user.entity';
 import { AuthGuard } from './guards';
 import { ExcludeUserPasswordInterceptor } from './interceptors';
 import { UserService } from './user.service';
@@ -78,14 +78,24 @@ export class UserController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Users array',
+    type: [UserResponse],
   })
   async findAll(@Query() query: PaginationDto) {
     return this.userService.findAll(query);
   }
 
+  @UseGuards(AuthGuard)
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.userService.findOne({ _id: id });
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Find user by ID' })
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Requested user',
+    type: UserResponse,
+  })
+  async findOne(@Param() { id }: UserIdDto) {
+    return this.userService.findById(id);
   }
 
   @Patch(':id')

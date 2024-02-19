@@ -5,7 +5,6 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  Param,
   Patch,
   Post,
   Query,
@@ -103,7 +102,7 @@ export class UserController {
   @UseGuards(AuthGuard)
   @Patch()
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Update user' })
+  @ApiOperation({ summary: 'Update current user' })
   @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: HttpStatus.OK,
@@ -114,8 +113,16 @@ export class UserController {
     return this.userService.update(user, body);
   }
 
-  @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  @UseGuards(AuthGuard)
+  @Delete()
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete current user' })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'User deleted successfully',
+  })
+  async remove(@CurrentUser() user: User) {
+    return this.userService.remove(user._id);
   }
 }

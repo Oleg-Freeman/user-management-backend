@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
+import { compare, genSalt, hash } from 'bcryptjs';
 import { FilterQuery, Model } from 'mongoose';
 import {
   EMAIL_EXISTS_ERROR,
@@ -13,7 +14,6 @@ import {
 } from '../../constants';
 import { LoginDto, RegisterDto, UpdateUserDto } from './dto';
 import { User } from './entities/user.entity';
-import { compare, genSalt, hash } from 'bcryptjs';
 
 @Injectable()
 export class UserService {
@@ -113,7 +113,7 @@ export class UserService {
     return user;
   }
 
-  async remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string) {
+    await this.userModel.findByIdAndDelete(id);
   }
 }

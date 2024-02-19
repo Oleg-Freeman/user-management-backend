@@ -44,10 +44,10 @@ export class UserService {
       password: hashedPassword,
     });
 
-    const token = await this.jwtService.signAsync({ id: user.id });
+    const token = await this.jwtService.signAsync({ id: user._id });
 
     user = await this.userModel.findByIdAndUpdate(
-      user.id,
+      user._id,
       { token },
       { new: true },
     );
@@ -70,10 +70,10 @@ export class UserService {
       throw new BadRequestException(WRONG_CREDENTIALS_MESSAGE);
     }
 
-    const token = await this.jwtService.signAsync({ id: user.id });
+    const token = await this.jwtService.signAsync({ id: user._id });
 
     user = await this.userModel.findByIdAndUpdate(
-      user.id,
+      user._id,
       { token },
       { new: true },
     );

@@ -19,7 +19,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { CurrentUser } from './decorators';
-import { LoginDto, RegisterDto, UpdateUserDto, UserIdDto } from './dto';
+import { LoginDto, RegisterDto, UpdateUserDto } from './dto';
 import { PaginationDto } from './dto/pagination.dto';
 import { User, UserResponse } from './entities/user.entity';
 import { AuthGuard } from './guards';
@@ -84,23 +84,34 @@ export class UserController {
     return this.userService.findAll(query);
   }
 
+  @UseInterceptors(ExcludeUserPasswordInterceptor)
   @UseGuards(AuthGuard)
-  @Get(':id')
+  @Get('me')
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Find user by ID' })
+  @ApiOperation({ summary: 'Get current logged in user' })
   @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Requested user',
-    type: UserResponse,
+    type: User,
   })
-  async findOne(@Param() { id }: UserIdDto) {
-    return this.userService.findById(id);
+  async findOne(@CurrentUser() user: User) {
+    return user;
   }
 
-  @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  @UseInterceptors(ExcludeUserPasswordInterceptor)
+  @UseGuards(AuthGuard)
+  @Patch()
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update user' })
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Updated user',
+    type: User,
+  })
+  async update(@CurrentUser() user: User, @Body() body: UpdateUserDto) {
+    return this.userService.update(user, body);
   }
 
   @Delete(':id')

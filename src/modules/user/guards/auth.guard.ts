@@ -1,3 +1,5 @@
+// noinspection ExceptionCaughtLocallyJS
+
 import {
   CanActivate,
   ExecutionContext,

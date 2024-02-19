@@ -85,8 +85,12 @@ export class UserService {
     await this.userModel.findByIdAndUpdate(user._id, { token: null });
   }
 
-  async findAll() {
-    return `This action returns all user`;
+  async findAll({ limit = 10, skip = 0 }: { limit?: number; skip?: number }) {
+    return this.userModel
+      .find()
+      .select('-password -token')
+      .limit(limit)
+      .skip(skip);
   }
 
   async findOne(query: FilterQuery<User>) {

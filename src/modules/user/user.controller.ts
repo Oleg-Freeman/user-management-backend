@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -19,6 +20,7 @@ import {
 } from '@nestjs/swagger';
 import { CurrentUser } from './decorators';
 import { LoginDto, RegisterDto, UpdateUserDto } from './dto';
+import { PaginationDto } from './dto/pagination.dto';
 import { User } from './entities/user.entity';
 import { AuthGuard } from './guards';
 import { ExcludeUserPasswordInterceptor } from './interceptors';
@@ -68,9 +70,17 @@ export class UserController {
     return this.userService.logout(user);
   }
 
+  @UseGuards(AuthGuard)
   @Get()
-  async findAll() {
-    return this.userService.findAll();
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Find all users' })
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Users array',
+  })
+  async findAll(@Query() query: PaginationDto) {
+    return this.userService.findAll(query);
   }
 
   @Get(':id')

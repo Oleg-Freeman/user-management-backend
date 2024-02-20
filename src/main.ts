@@ -18,7 +18,12 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
 
-  SwaggerModule.setup('/api/v1/docs', app, document);
+  SwaggerModule.setup(
+    '/api/v1/docs',
+    app,
+    document,
+    configService.getSwaggerConfig(),
+  );
   app.useGlobalPipes(new ValidationPipe(configService.getValidationOptions()));
 
   await app.listen(port, async () =>

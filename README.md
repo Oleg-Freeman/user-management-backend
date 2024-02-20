@@ -1,6 +1,8 @@
+# User management API
+
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+[Nest](https://github.com/nestjs/nest).js API to manage users in database. See demo [here](https://user-management-backend-steel.vercel.app/api/v1/docs)
 
 ## Installation
 
@@ -28,6 +30,9 @@ $ npm run start:dev
 
 # production mode
 $ npm run start:prod
+
+# Docker
+$ docker compose up -d
 ```
 
 ## Test
@@ -45,4 +50,4 @@ $ npm run test:cov
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+[MIT licensed](LICENSE).

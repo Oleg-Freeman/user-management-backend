@@ -1,13 +1,14 @@
-FROM node:20 as base
+FROM node:20
 
 WORKDIR /app
 
 COPY package*.json ./
 
-RUN export $(cat .env) && npm install
+RUN npm install
 
 COPY . .
 
 EXPOSE $PORT
+ENV MONGO_HOST=mongo
 
-CMD export $(cat .env) && npm start
+CMD npm start

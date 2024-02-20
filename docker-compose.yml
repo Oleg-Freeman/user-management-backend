@@ -1,3 +1,4 @@
+version: "3"
 services:
   mongo:
     container_name: user-management-mongo
@@ -6,6 +7,8 @@ services:
       - '27017:27017'
     environment:
       MONGO_INITDB_DATABASE: database
+    networks:
+      - common-net
   backend:
     container_name: user-management-backend
     build:
@@ -13,5 +16,13 @@ services:
         dockerfile: Dockerfile
     ports:
       - "${PORT}:${PORT}"
+    depends_on:
+      - mongo
     env_file:
       - .env
+    networks:
+      - common-net
+
+networks:
+  common-net:
+    driver: bridge

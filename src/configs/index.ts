@@ -55,7 +55,15 @@ class ConfigService {
   }
 
   getMongoUrl(): string {
-    return this.getValue('MONGO_URL', false) || 'mongodb://localhost:27017';
+    const mongoUrl = this.getValue('MONGO_URL', false);
+
+    if (mongoUrl) {
+      return mongoUrl;
+    }
+
+    const mongoHost = this.getValue('MONGO_HOST', false);
+
+    return `mongodb://${mongoHost || 'localhost'}:27017`;
   }
 
   getJwtSecret(): string {
